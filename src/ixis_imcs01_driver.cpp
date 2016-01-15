@@ -9,8 +9,8 @@
 class ixis_imcs01_driver
 {
  public:
-  ixis_imcs01_driver(ros::NodeHandle nh, std::string portName)
-      : nh_(nh), rate_(100), port_(portName)
+  ixis_imcs01_driver(ros::NodeHandle nh, std::string portName_right, std::string portName_left)
+      : nh_(nh), rate_(100), port_right_(portName_right), port_left_(portName_left)
   {
     wheel_state_.name.resize(6);
     wheel_state_.position.resize(6);
@@ -41,7 +41,8 @@ class ixis_imcs01_driver
   void calculateWheelSpeed()
   {
     for(int i = 0; i < 3; i++){
-      wheel_state_.velocity[i] = (imcs01_.delta_encoder_counts_[i]*100.0/imcs01_.delta_encoder_time_);
+      wheel_state_.velocity[2*i] = (imcs01_right_.delta_encoder_counts_[i]*100.0/imcs01_right_.delta_encoder_time_);
+      wheel_state_.velocity[2*i+1] = -(imcs01_left_.delta_encoder_counts_[i]*100.0/imcs01_left_.delta_encoder_time_);
     }
   }
 
@@ -49,7 +50,8 @@ class ixis_imcs01_driver
   {
      while(nh_.ok())
 	{
-      imcs01_.update(&port_);
+      imcs01_left_.update(&port_left_);
+      imcs01_right_.update(&port_right_);
       calculateWheelSpeed();
       wheel_state_.header.stamp = ros::Time::now();
       wheel_velo_pub_.publish(wheel_state_);
@@ -58,8 +60,10 @@ class ixis_imcs01_driver
     }
   }
  private:
-  SerialPort port_;
-  iXis_iMCs01 imcs01_;
+  SerialPort port_right_;
+  SerialPort port_left_;
+  iXis_iMCs01 imcs01_right_;
+  iXis_iMCs01 imcs01_left_;
   ros::NodeHandle nh_;
   ros::Rate rate_;
   ros::Publisher wheel_velo_pub_;
@@ -72,7 +76,7 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "ixis_imcs01_driver");
   ros::NodeHandle nh;
   
-  ixis_imcs01_driver driver(nh, "/dev/urbtc0");
+  ixis_imcs01_driver driver(nh, "/dev/urbtc0", "/dev/urbtc1");
   driver.run();
 
 

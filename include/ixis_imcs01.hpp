@@ -44,9 +44,9 @@ class iXis_iMCs01{
     //! 0 is right, 1 is left.
     for (int i = 0; i < encoder_counts_.size(); ++i) {
       encoder_counts_[i] = (int)received_data_.ct[i+1];
-      ROS_INFO("ct[%d] : %d", i, encoder_counts_[i]);
+      //ROS_INFO("ct[%d] : %d", i, encoder_counts_[i]);
     }
-    printf("\n");
+    //printf("\n");
     delta_encoder_time_ = (double)(received_data_.time) - last_encoder_time_;
 
     if(delta_encoder_time_ < 0){
