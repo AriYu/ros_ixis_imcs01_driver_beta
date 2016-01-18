@@ -41,8 +41,8 @@ class ixis_imcs01_driver
   void calculateWheelSpeed()
   {
     for(int i = 0; i < 3; i++){
-      wheel_state_.velocity[2*i] = (imcs01_right_.delta_encoder_counts_[i]*100.0/imcs01_right_.delta_encoder_time_);
-      wheel_state_.velocity[2*i+1] = -(imcs01_left_.delta_encoder_counts_[i]*100.0/imcs01_left_.delta_encoder_time_);
+      wheel_state_.velocity[2*i] = (imcs01_right_.delta_encoder_counts_[i]*0.000033/imcs01_right_.delta_encoder_time_);
+      wheel_state_.velocity[2*i+1] = -(imcs01_left_.delta_encoder_counts_[i]*0.000033/imcs01_left_.delta_encoder_time_);
     }
   }
 
